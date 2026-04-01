@@ -105,28 +105,36 @@
         /* --- RSVP --- */
         .rsvp-section { text-align: center; margin: 120px 0 20px; background: var(--bg-dark-grey); padding: 60px 20px; border-radius: 4px;}
         .btn-group { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 40px; }
-        .btn { font-family: var(--font-body); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; padding: 18px 35px; border: 1px solid; cursor: pointer; background: transparent; color: var(--text-main); transition: 0.3s; }
+        
+        .btn { 
+            font-family: var(--font-body); 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            padding: 18px 0; 
+            width: 220px;
+            border: 1px solid; 
+            cursor: pointer; 
+            background: transparent; 
+            color: var(--text-main); 
+            transition: 0.3s; 
+        }
         .btn-yes { color: var(--accent-gold); border-color: var(--accent-gold); }
         .btn-yes:hover { background: var(--accent-gold); color: black; }
+        .btn-no { color: var(--text-muted); border-color: var(--text-muted); }
+        .btn-no:hover { background: var(--text-muted); color: black; }
 
-        /* --- KASPI PAYMENT (ЖАҢАРТЫЛҒАН ЛОГОТИППЕН) --- */
+        /* --- KASPI PAYMENT --- */
         .payment-box { text-align: center; padding: 40px 0; }
         .kaspi-btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 12px;
-            background-color: var(--kaspi-red); color: white; padding: 10px 24px;
+            background-color: var(--kaspi-red); color: white; padding: 12px 24px;
             border-radius: 12px; font-weight: 600; text-decoration: none; font-size: 0.9rem;
             transition: 0.3s ease;
             box-shadow: 0 4px 15px rgba(241, 70, 53, 0.3);
         }
         .kaspi-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(241, 70, 53, 0.5); }
-        
-        /* Сен жіберген сурет лого ретінде */
-        .kaspi-custom-logo {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-            border-radius: 4px; /* Егер сурет дөңгелек болмаса, жиегін сәл жұмсартады */
-        }
+        .kaspi-custom-logo { width: 24px; height: 24px; object-fit: contain; }
 
         /* --- Music Button --- */
         #musicToggle {
@@ -140,6 +148,7 @@
             .carousel-item { width: 220px; height: 320px; }
             .carousel-item.prev { transform: translateX(-120px) scale(0.8); }
             .carousel-item.next { transform: translateX(120px) scale(0.8); }
+            .btn { width: 100%; max-width: 280px; }
         }
     </style>
 </head>
@@ -192,7 +201,7 @@
             <p>Жауабыңызды 5 сәуірге дейін күтеміз:</p>
             <div class="btn-group">
                 <button onclick="handleRSVP('Келемін')" class="btn btn-yes">Растаймын</button>
-                <button onclick="handleRSVP('Келмеймін')" class="btn">Келе алмаймын</button>
+                <button onclick="handleRSVP('Келмеймін')" class="btn btn-no">Келе алмаймын</button>
             </div>
         </div>
 
@@ -205,21 +214,44 @@
     </div>
 
     <script>
+        const audio = document.getElementById("myAudio");
+        const icon = document.getElementById("musicIcon");
+        let hasStarted = false;
+
+        // --- МУЗЫКАНЫ СКРОЛЛ АРҚЫЛ ҚОСУ ---
+        window.addEventListener('scroll', function() {
+            if (!hasStarted && window.scrollY > 50) {
+                audio.play().then(() => {
+                    hasStarted = true;
+                    icon.className = "fas fa-pause";
+                }).catch(error => {
+                    console.log("Авто-ойнату блокталып тұр, қолмен қосу қажет.");
+                });
+            }
+        });
+
+        function toggleMusic() {
+            if (audio.paused) { 
+                audio.play(); 
+                icon.className = "fas fa-pause"; 
+                hasStarted = true;
+            } else { 
+                audio.pause(); 
+                icon.className = "fas fa-play"; 
+            }
+        }
+
+        // --- КАРУСЕЛЬ ЛОГИКАСЫ ---
         const items = document.querySelectorAll('.carousel-item');
         let current = 0;
 
         function updateCarousel() {
             items.forEach((item, index) => {
                 item.className = 'carousel-item';
-                if (index === current) {
-                    item.classList.add('active');
-                } else if (index === (current - 1 + items.length) % items.length) {
-                    item.classList.add('prev');
-                } else if (index === (current + 1) % items.length) {
-                    item.classList.add('next');
-                } else {
-                    item.classList.add('hidden');
-                }
+                if (index === current) item.classList.add('active');
+                else if (index === (current - 1 + items.length) % items.length) item.classList.add('prev');
+                else if (index === (current + 1) % items.length) item.classList.add('next');
+                else item.classList.add('hidden');
             });
         }
 
@@ -237,28 +269,21 @@
 
         updateCarousel();
 
-        const audio = document.getElementById("myAudio");
-        const icon = document.getElementById("musicIcon");
-
-        function toggleMusic() {
-            if (audio.paused) { audio.play(); icon.className = "fas fa-pause"; }
-            else { audio.pause(); icon.className = "fas fa-play"; }
-        }
-
         function handleRSVP(status) {
             let name = prompt("Атыңыз:");
             if (name) alert("Рахмет, " + name + "!");
         }
 
+        // Timer
         const eventDate = new Date("April 7, 2026 13:00:00").getTime();
         setInterval(() => {
             const now = new Date().getTime();
             const d = eventDate - now;
             if (document.getElementById("days")) {
-                document.getElementById("days").innerHTML = Math.floor(d / (1000 * 60 * 60 * 24));
-                document.getElementById("hours").innerHTML = Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                document.getElementById("minutes").innerHTML = Math.floor((d % (1000 * 60 * 60)) / (1000 * 60));
-                document.getElementById("seconds").innerHTML = Math.floor((d % (1000 * 60)) / 1000);
+                document.getElementById("days").innerHTML = Math.max(0, Math.floor(d / (1000 * 60 * 60 * 24)));
+                document.getElementById("hours").innerHTML = Math.max(0, Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+                document.getElementById("minutes").innerHTML = Math.max(0, Math.floor((d % (1000 * 60 * 60)) / (1000 * 60)));
+                document.getElementById("seconds").innerHTML = Math.max(0, Math.floor((d % (1000 * 60)) / 1000));
             }
         }, 1000);
     </script>
