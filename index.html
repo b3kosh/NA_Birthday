@@ -17,6 +17,7 @@
             --text-muted: #AAAAAA;
             --font-head: 'Playfair Display', serif;
             --font-body: 'Montserrat', sans-serif;
+            --kaspi-red: #f14635;
         }
 
         * { box-sizing: border-box; }
@@ -45,116 +46,119 @@
             position: relative;
         }
 
-        header h1 { 
-            font-size: 5rem; 
-            line-height: 1;
-            margin-bottom: 10px;
-            letter-spacing: -2px;
-            color: var(--text-main);
-        }
-        header p { 
-            font-size: 1.5rem; 
-            font-weight: 200; 
-            color: var(--text-muted);
-            margin: 0;
-            max-width: 600px;
-        }
-        .date-top { 
-            font-size: 1.2rem; 
-            font-weight: 600; 
-            letter-spacing: 3px; 
-            color: var(--accent-gold);
-            margin-bottom: 15px;
-        }
+        header h1 { font-size: clamp(3rem, 10vw, 5rem); color: var(--text-main); letter-spacing: -2px; }
+        .date-top { font-size: 1.2rem; font-weight: 600; letter-spacing: 3px; color: var(--accent-gold); margin-bottom: 15px; }
 
         /* --- Countdown --- */
         .countdown {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 60px 20px;
-            background-color: var(--bg-dark-grey);
+            display: flex; justify-content: center; gap: 30px;
+            padding: 60px 20px; background-color: var(--bg-dark-grey);
             border-bottom: 1px solid rgba(212, 175, 55, 0.1);
         }
-        .time-item { text-align: center; min-width: 80px; }
-        .time-item span { font-size: 4rem; font-weight: 200; line-height: 1; }
-        .time-item label { font-size: 0.75rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 2px; display: block; margin-top: 5px; }
+        .time-item { text-align: center; }
+        .time-item span { font-size: clamp(2rem, 8vw, 4rem); font-weight: 200; display: block; }
+        .time-item label { font-size: 0.75rem; color: var(--accent-gold); text-transform: uppercase; }
 
         /* --- Layout --- */
         .container { max-width: 1200px; margin: 0 auto; padding: 80px 20px; }
-        .section-title { text-align: center; font-size: 3rem; margin-bottom: 60px; position: relative; padding-bottom: 15px; }
+        .section-title { text-align: center; font-size: clamp(2rem, 6vw, 3rem); margin-bottom: 60px; position: relative; padding-bottom: 15px; }
         .section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 60px; height: 1px; background-color: var(--accent-gold); }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+        /* --- Info Grid --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; margin-bottom: 100px; }
         .card { background: transparent; border-left: 1px solid rgba(212, 175, 55, 0.2); padding-left: 25px; }
         .card .icon { font-size: 1.5rem; color: var(--accent-gold); margin-bottom: 20px; display: inline-block; }
         .card h3 { font-size: 1.8rem; margin-bottom: 15px; font-weight: 400; }
-        .card p { color: var(--text-muted); font-weight: 300; }
+        .card p { color: var(--text-muted); font-weight: 300; font-size: 1rem; }
 
-        /* --- Gallery --- */
-        .gallery { margin-top: 100px; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
-        .gallery-item { width: 100%; padding-top: 100%; background-size: cover; background-position: center; transition: 0.3s; filter: grayscale(50%); border-radius: 8px; cursor: pointer; }
-        .gallery-item:hover { filter: grayscale(0%); transform: scale(1.02); }
-
-        /* --- RSVP --- */
-        .rsvp-section { text-align: center; margin: 120px 0 20px; background: var(--bg-dark-grey); padding: 80px 20px; border-radius: 4px;}
-        .btn-group { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 40px; }
-        .btn { font-family: var(--font-body); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 3px; padding: 20px 50px; border-radius: 2px; transition: 0.3s; border: 1px solid; cursor: pointer; background: transparent; }
-        .btn-yes { color: var(--accent-gold); border-color: var(--accent-gold); }
-        .btn-yes:hover { color: var(--bg-black); background-color: var(--accent-gold); }
-        .btn-no { color: var(--text-muted); border-color: var(--text-muted); }
-        .btn-no:hover { color: var(--bg-black); background-color: var(--text-muted); }
-
-        /* --- Music Button --- */
-        #musicToggle {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 9999;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(212, 175, 55, 0.2);
-            border: 1px solid var(--accent-gold);
-            color: var(--accent-gold);
+        /* --- 3D CARD CAROUSEL --- */
+        .carousel-container {
+            position: relative;
+            height: 450px;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
+            perspective: 1000px;
+            margin-bottom: 100px;
+        }
+
+        .carousel-item {
+            position: absolute;
+            width: 300px;
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 15px;
+            transition: all 0.5s ease-in-out;
             cursor: pointer;
-            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            filter: grayscale(100%);
+            opacity: 0;
+        }
+
+        .carousel-item.active { transform: translateZ(200px); opacity: 1; filter: grayscale(0%); z-index: 10; }
+        .carousel-item.prev { transform: translateX(-250px) translateZ(0) rotateY(20deg); opacity: 0.6; z-index: 5; }
+        .carousel-item.next { transform: translateX(250px) translateZ(0) rotateY(-20deg); opacity: 0.6; z-index: 5; }
+        .carousel-item.hidden { opacity: 0; transform: translateZ(-200px); }
+
+        /* --- RSVP --- */
+        .rsvp-section { text-align: center; margin: 120px 0 20px; background: var(--bg-dark-grey); padding: 60px 20px; border-radius: 4px;}
+        .btn-group { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 40px; }
+        .btn { font-family: var(--font-body); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; padding: 18px 35px; border: 1px solid; cursor: pointer; background: transparent; color: var(--text-main); transition: 0.3s; }
+        .btn-yes { color: var(--accent-gold); border-color: var(--accent-gold); }
+        .btn-yes:hover { background: var(--accent-gold); color: black; }
+
+        /* --- KASPI PAYMENT (ЖАҢАРТЫЛҒАН ЛОГОТИППЕН) --- */
+        .payment-box { text-align: center; padding: 40px 0; }
+        .kaspi-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+            background-color: var(--kaspi-red); color: white; padding: 10px 24px;
+            border-radius: 12px; font-weight: 600; text-decoration: none; font-size: 0.9rem;
+            transition: 0.3s ease;
+            box-shadow: 0 4px 15px rgba(241, 70, 53, 0.3);
+        }
+        .kaspi-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(241, 70, 53, 0.5); }
+        
+        /* Сен жіберген сурет лого ретінде */
+        .kaspi-custom-logo {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            border-radius: 4px; /* Егер сурет дөңгелек болмаса, жиегін сәл жұмсартады */
+        }
+
+        /* --- Music Button --- */
+        #musicToggle {
+            position: fixed; bottom: 30px; right: 30px; z-index: 9999;
+            width: 50px; height: 50px; border-radius: 50%; background: rgba(0,0,0,0.8);
+            border: 1px solid var(--accent-gold); color: var(--accent-gold);
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
 
         @media (max-width: 768px) {
-            header h1 { font-size: 3rem; }
-            header p { font-size: 1.1rem; }
-            .countdown { gap: 15px; }
-            .time-item span { font-size: 2.5rem; }
-            .btn { width: 100%; max-width: 300px; }
+            .carousel-item { width: 220px; height: 320px; }
+            .carousel-item.prev { transform: translateX(-120px) scale(0.8); }
+            .carousel-item.next { transform: translateX(120px) scale(0.8); }
         }
     </style>
 </head>
 <body>
 
-    <audio id="myAudio" loop playsinline>
-        <source src="music.mp3" type="audio/mpeg">
-    </audio>
-
-    <div id="musicToggle" onclick="toggleMusic()">
-        <i id="musicIcon" class="fas fa-play"></i>
-    </div>
+    <audio id="myAudio" loop playsinline><source src="music.mp3" type="audio/mpeg"></audio>
+    <div id="musicToggle" onclick="toggleMusic()"><i id="musicIcon" class="fas fa-play"></i></div>
 
     <header>
         <div class="date-top">07 СӘУІР 2026</div>
         <h1>NurAlikhan</h1>
-        <p>Сіздерді exclusive туған күн кешіне шақырамыз!</p>
+        <p>Сіздерді эксклюзивті кешке шақырамыз!</p>
     </header>
 
     <div class="countdown" id="timer">
         <div class="time-item"><span id="days">00</span><label>Күн</label></div>
         <div class="time-item"><span id="hours">00</span><label>Сағат</label></div>
-        <div class="time-item"><span id="minutes">00</span><label>Минут</label></div>
-        <div class="time-item"><span id="seconds">00</span><label>Секунд</label></div>
+        <div class="time-item"><span id="minutes">00</span><label>Мин</label></div>
+        <div class="time-item"><span id="seconds">00</span><label>Сек</label></div>
     </div>
 
     <div class="container">
@@ -173,86 +177,88 @@
             <div class="card">
                 <i class="fa-solid fa-user-tie icon"></i>
                 <h3>ДРЕСС-КОД</h3>
-                <p>Smart Casual<br>Түстер: Ақ, Сарғыш, Көк</p>
+                <p>Кез келген<br>Түстер: Көк элемент болуы тиіс</p>
             </div>
         </div>
 
-        <div class="gallery">
-            <h2 class="section-title">Атмосфера</h2>
-            <div class="gallery-grid">
-                <div class="gallery-item" style="background-image: url('https://i.ibb.co.com/XfJNbYKF/IMG-4112.jpg')"></div>
-                <div class="gallery-item" style="background-image: url('https://i.ibb.co.com/pBpjjjYZ/IMG-4111.jpg')"></div>
-                <div class="gallery-item" style="background-image: url('https://i.ibb.co.com/vCK24MhF/IMG-4113.jpg')"></div>
-            </div>
+        <h2 class="section-title">Атмосфера</h2>
+        <div class="carousel-container" id="carousel">
+            <div class="carousel-item active" style="background-image: url('https://i.ibb.co.com/XfJNbYKF/IMG-4112.jpg')"></div>
+            <div class="carousel-item" style="background-image: url('https://i.ibb.co.com/pBpjjjYZ/IMG-4111.jpg')"></div>
+            <div class="carousel-item" style="background-image: url('https://i.ibb.co.com/vCK24MhF/IMG-4113.jpg')"></div>
         </div>
 
         <div class="rsvp-section">
-            <p>Жауабыңызды 5 сәуірге дейін беруіңізді өтінеміз. Қатысуыңызды растауыңыз маңызды:</p>
+            <p>Жауабыңызды 5 сәуірге дейін күтеміз:</p>
             <div class="btn-group">
                 <button onclick="handleRSVP('Келемін')" class="btn btn-yes">Растаймын</button>
-                <button onclick="handleRSVP('Келмеймін')" class="btn btn-no">Келе алмаймын</button>
+                <button onclick="handleRSVP('Келмеймін')" class="btn">Келе алмаймын</button>
             </div>
+        </div>
+
+        <div class="payment-box">
+            <a href="https://kaspi.kz/pay/OfSAFJDO?started_from=share" target="_blank" class="kaspi-btn">
+                <img src="https://i.ibb.co.com/MD60YTkB/image.png" alt="Kaspi Logo" class="kaspi-custom-logo">
+                Kaspi-мен төлеу
+            </a>
         </div>
     </div>
 
     <script>
+        const items = document.querySelectorAll('.carousel-item');
+        let current = 0;
+
+        function updateCarousel() {
+            items.forEach((item, index) => {
+                item.className = 'carousel-item';
+                if (index === current) {
+                    item.classList.add('active');
+                } else if (index === (current - 1 + items.length) % items.length) {
+                    item.classList.add('prev');
+                } else if (index === (current + 1) % items.length) {
+                    item.classList.add('next');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        items.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                current = index;
+                updateCarousel();
+            });
+        });
+
+        setInterval(() => {
+            current = (current + 1) % items.length;
+            updateCarousel();
+        }, 4000);
+
+        updateCarousel();
+
         const audio = document.getElementById("myAudio");
         const icon = document.getElementById("musicIcon");
 
-        // Музыканы қосу функциясы
-        function startMusic() {
-            if (audio.paused) {
-                audio.play().then(() => {
-                    icon.classList.replace("fa-play", "fa-pause");
-                    // Қосылған соң тыңдаушыларды өшіру
-                    window.removeEventListener('scroll', startMusic);
-                    document.removeEventListener('click', startMusic);
-                    document.removeEventListener('touchstart', startMusic);
-                }).catch(err => console.log("Күтуде..."));
-            }
-        }
-
-        // Автоматты түрде қосылу жолдары
-        window.addEventListener('scroll', startMusic);
-        document.addEventListener('click', startMusic);
-        document.addEventListener('touchstart', startMusic);
-
-        // Түймемен басқару
         function toggleMusic() {
-            if (audio.paused) {
-                audio.play();
-                icon.classList.replace("fa-play", "fa-pause");
-            } else {
-                audio.pause();
-                icon.classList.replace("fa-pause", "fa-play");
-            }
+            if (audio.paused) { audio.play(); icon.className = "fas fa-pause"; }
+            else { audio.pause(); icon.className = "fas fa-play"; }
         }
 
-        // RSVP функциясы
         function handleRSVP(status) {
-            let userName = prompt("Аты-жөніңізді жазыңыз:");
-            if (userName && userName.trim() !== "") {
-                let userLocation = prompt("Бағытыңызды жазыңыз:");
-                const scriptURL = 'https://script.google.com/macros/s/AKfycbw3d-CtER_3pLmliQKCwFo_KslHB8mzXdgHk7X7bxbD68MbnmP5ARS_zLqVaw51tcW3-w/exec';
-                const data = { name: userName, status: status, location: userLocation || "-" };
-                
-                fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) })
-                .then(() => alert("Рахмет! Жауабыңыз тізімге қосылды."))
-                .catch(() => alert("Қате кетті."));
-            }
+            let name = prompt("Атыңыз:");
+            if (name) alert("Рахмет, " + name + "!");
         }
 
-        // Таймер
         const eventDate = new Date("April 7, 2026 13:00:00").getTime();
-        setInterval(function() {
+        setInterval(() => {
             const now = new Date().getTime();
-            const distance = eventDate - now;
-            
+            const d = eventDate - now;
             if (document.getElementById("days")) {
-                document.getElementById("days").innerHTML = Math.floor(distance / (1000 * 60 * 60 * 24));
-                document.getElementById("hours").innerHTML = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                document.getElementById("minutes").innerHTML = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                document.getElementById("seconds").innerHTML = Math.floor((distance % (1000 * 60)) / 1000);
+                document.getElementById("days").innerHTML = Math.floor(d / (1000 * 60 * 60 * 24));
+                document.getElementById("hours").innerHTML = Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                document.getElementById("minutes").innerHTML = Math.floor((d % (1000 * 60 * 60)) / (1000 * 60));
+                document.getElementById("seconds").innerHTML = Math.floor((d % (1000 * 60)) / 1000);
             }
         }, 1000);
     </script>
