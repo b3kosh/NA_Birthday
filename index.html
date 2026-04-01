@@ -31,6 +31,7 @@
 
         h1, h2, h3 { font-family: var(--font-head); font-weight: 700; margin: 0; }
 
+        /* --- Hero Section --- */
         header {
             height: 100vh;
             background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8)), 
@@ -66,6 +67,7 @@
             margin-bottom: 15px;
         }
 
+        /* --- Countdown --- */
         .countdown {
             display: flex;
             justify-content: center;
@@ -76,8 +78,9 @@
         }
         .time-item { text-align: center; min-width: 80px; }
         .time-item span { font-size: 4rem; font-weight: 200; line-height: 1; }
-        .time-item label { font-size: 0.75rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 2px; display: block; }
+        .time-item label { font-size: 0.75rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 2px; display: block; margin-top: 5px; }
 
+        /* --- Layout --- */
         .container { max-width: 1200px; margin: 0 auto; padding: 80px 20px; }
         .section-title { text-align: center; font-size: 3rem; margin-bottom: 60px; position: relative; padding-bottom: 15px; }
         .section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 60px; height: 1px; background-color: var(--accent-gold); }
@@ -85,21 +88,25 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
         .card { background: transparent; border-left: 1px solid rgba(212, 175, 55, 0.2); padding-left: 25px; }
         .card .icon { font-size: 1.5rem; color: var(--accent-gold); margin-bottom: 20px; display: inline-block; }
-        
+        .card h3 { font-size: 1.8rem; margin-bottom: 15px; font-weight: 400; }
+        .card p { color: var(--text-muted); font-weight: 300; }
+
+        /* --- Gallery --- */
         .gallery { margin-top: 100px; }
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
-        .gallery-item { width: 100%; padding-top: 100%; background-size: cover; background-position: center; transition: 0.3s; filter: grayscale(50%); border-radius: 8px; }
+        .gallery-item { width: 100%; padding-top: 100%; background-size: cover; background-position: center; transition: 0.3s; filter: grayscale(50%); border-radius: 8px; cursor: pointer; }
         .gallery-item:hover { filter: grayscale(0%); transform: scale(1.02); }
 
+        /* --- RSVP --- */
         .rsvp-section { text-align: center; margin: 120px 0 20px; background: var(--bg-dark-grey); padding: 80px 20px; border-radius: 4px;}
-        
-        .btn-group { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .btn-group { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 40px; }
         .btn { font-family: var(--font-body); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 3px; padding: 20px 50px; border-radius: 2px; transition: 0.3s; border: 1px solid; cursor: pointer; background: transparent; }
         .btn-yes { color: var(--accent-gold); border-color: var(--accent-gold); }
         .btn-yes:hover { color: var(--bg-black); background-color: var(--accent-gold); }
         .btn-no { color: var(--text-muted); border-color: var(--text-muted); }
-        
-        /* Музыка батырмасы */
+        .btn-no:hover { color: var(--bg-black); background-color: var(--text-muted); }
+
+        /* --- Music Button --- */
         #musicToggle {
             position: fixed;
             bottom: 30px;
@@ -120,14 +127,16 @@
 
         @media (max-width: 768px) {
             header h1 { font-size: 3rem; }
+            header p { font-size: 1.1rem; }
             .countdown { gap: 15px; }
             .time-item span { font-size: 2.5rem; }
+            .btn { width: 100%; max-width: 300px; }
         }
     </style>
 </head>
 <body>
 
-    <audio id="myAudio" loop>
+    <audio id="myAudio" loop playsinline>
         <source src="music.mp3" type="audio/mpeg">
     </audio>
 
@@ -187,10 +196,28 @@
     </div>
 
     <script>
-        // Музыканы басқару
         const audio = document.getElementById("myAudio");
         const icon = document.getElementById("musicIcon");
 
+        // Музыканы қосу функциясы
+        function startMusic() {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    icon.classList.replace("fa-play", "fa-pause");
+                    // Қосылған соң тыңдаушыларды өшіру
+                    window.removeEventListener('scroll', startMusic);
+                    document.removeEventListener('click', startMusic);
+                    document.removeEventListener('touchstart', startMusic);
+                }).catch(err => console.log("Күтуде..."));
+            }
+        }
+
+        // Автоматты түрде қосылу жолдары
+        window.addEventListener('scroll', startMusic);
+        document.addEventListener('click', startMusic);
+        document.addEventListener('touchstart', startMusic);
+
+        // Түймемен басқару
         function toggleMusic() {
             if (audio.paused) {
                 audio.play();
@@ -201,34 +228,32 @@
             }
         }
 
-        // Қолданушы сайтты бірінші рет басқанда музыканы қосу (Браузер талабы)
-        document.body.addEventListener('click', function() {
-            if (audio.paused) {
-                audio.play();
-                icon.classList.replace("fa-play", "fa-pause");
-            }
-        }, { once: true });
-
+        // RSVP функциясы
         function handleRSVP(status) {
             let userName = prompt("Аты-жөніңізді жазыңыз:");
             if (userName && userName.trim() !== "") {
                 let userLocation = prompt("Бағытыңызды жазыңыз:");
                 const scriptURL = 'https://script.google.com/macros/s/AKfycbw3d-CtER_3pLmliQKCwFo_KslHB8mzXdgHk7X7bxbD68MbnmP5ARS_zLqVaw51tcW3-w/exec';
                 const data = { name: userName, status: status, location: userLocation || "-" };
+                
                 fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) })
                 .then(() => alert("Рахмет! Жауабыңыз тізімге қосылды."))
                 .catch(() => alert("Қате кетті."));
             }
         }
 
+        // Таймер
         const eventDate = new Date("April 7, 2026 13:00:00").getTime();
         setInterval(function() {
             const now = new Date().getTime();
             const distance = eventDate - now;
-            document.getElementById("days").innerHTML = Math.floor(distance / (1000 * 60 * 60 * 24));
-            document.getElementById("hours").innerHTML = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            document.getElementById("minutes").innerHTML = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            document.getElementById("seconds").innerHTML = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            if (document.getElementById("days")) {
+                document.getElementById("days").innerHTML = Math.floor(distance / (1000 * 60 * 60 * 24));
+                document.getElementById("hours").innerHTML = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                document.getElementById("minutes").innerHTML = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                document.getElementById("seconds").innerHTML = Math.floor((distance % (1000 * 60)) / 1000);
+            }
         }, 1000);
     </script>
 </body>
