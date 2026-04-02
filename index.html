@@ -32,7 +32,6 @@
 
         h1, h2, h3 { font-family: var(--font-head); font-weight: 700; margin: 0; }
 
-        /* --- Hero Section --- */
         header {
             height: 100vh;
             background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8)), 
@@ -49,7 +48,6 @@
         header h1 { font-size: clamp(3rem, 10vw, 5rem); color: var(--text-main); letter-spacing: -2px; }
         .date-top { font-size: 1.2rem; font-weight: 600; letter-spacing: 3px; color: var(--accent-gold); margin-bottom: 15px; }
 
-        /* --- Countdown --- */
         .countdown {
             display: flex; justify-content: center; gap: 30px;
             padding: 60px 20px; background-color: var(--bg-dark-grey);
@@ -59,19 +57,16 @@
         .time-item span { font-size: clamp(2rem, 8vw, 4rem); font-weight: 200; display: block; }
         .time-item label { font-size: 0.75rem; color: var(--accent-gold); text-transform: uppercase; }
 
-        /* --- Layout --- */
         .container { max-width: 1200px; margin: 0 auto; padding: 80px 20px; }
         .section-title { text-align: center; font-size: clamp(2rem, 6vw, 3rem); margin-bottom: 60px; position: relative; padding-bottom: 15px; }
         .section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 60px; height: 1px; background-color: var(--accent-gold); }
 
-        /* --- Info Grid --- */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; margin-bottom: 100px; }
         .card { background: transparent; border-left: 1px solid rgba(212, 175, 55, 0.2); padding-left: 25px; }
         .card .icon { font-size: 1.5rem; color: var(--accent-gold); margin-bottom: 20px; display: inline-block; }
         .card h3 { font-size: 1.8rem; margin-bottom: 15px; font-weight: 400; }
         .card p { color: var(--text-muted); font-weight: 300; font-size: 1rem; }
 
-        /* --- 3D CARD CAROUSEL --- */
         .carousel-container {
             position: relative;
             height: 450px;
@@ -102,7 +97,6 @@
         .carousel-item.next { transform: translateX(250px) translateZ(0) rotateY(-20deg); opacity: 0.6; z-index: 5; }
         .carousel-item.hidden { opacity: 0; transform: translateZ(-200px); }
 
-        /* --- RSVP --- */
         .rsvp-section { text-align: center; margin: 120px 0 20px; background: var(--bg-dark-grey); padding: 60px 20px; border-radius: 4px;}
         .btn-group { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 40px; }
         
@@ -124,7 +118,6 @@
         .btn-no { color: var(--text-muted); border-color: var(--text-muted); }
         .btn-no:hover { background: var(--text-muted); color: black; }
 
-        /* --- KASPI PAYMENT --- */
         .payment-box { text-align: center; padding: 40px 0; }
         .kaspi-btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 12px;
@@ -136,7 +129,6 @@
         .kaspi-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(241, 70, 53, 0.5); }
         .kaspi-custom-logo { width: 24px; height: 24px; object-fit: contain; border-radius: 5px;}
 
-        /* --- Music Button --- */
         #musicToggle {
             position: fixed; bottom: 30px; right: 30px; z-index: 9999;
             width: 50px; height: 50px; border-radius: 50%; background: rgba(0,0,0,0.8);
@@ -218,33 +210,53 @@
         const icon = document.getElementById("musicIcon");
         let hasStarted = false;
 
-        // --- МУЗЫКАНЫ СКРОЛЛ АРҚЫЛ ҚОСУ ---
         window.addEventListener('scroll', function() {
             if (!hasStarted && window.scrollY > 50) {
                 audio.play().then(() => {
                     hasStarted = true;
                     icon.className = "fas fa-pause";
-                }).catch(error => {
-                    console.log("Авто-ойнату блокталып тұр, қолмен қосу қажет.");
-                });
+                }).catch(e => console.log("Audio block"));
             }
         });
 
         function toggleMusic() {
-            if (audio.paused) { 
-                audio.play(); 
-                icon.className = "fas fa-pause"; 
-                hasStarted = true;
-            } else { 
-                audio.pause(); 
-                icon.className = "fas fa-play"; 
-            }
+            if (audio.paused) { audio.play(); icon.className = "fas fa-pause"; hasStarted = true; }
+            else { audio.pause(); icon.className = "fas fa-play"; }
         }
 
-        // --- КАРУСЕЛЬ ЛОГИКАСЫ ---
+
+        function handleRSVP(status) {
+            let name = prompt("Аты-жөніңіз:");
+            if (!name) return;
+
+            let direction = prompt("Бағытыңызды жазыңыз (Мысалы: Менеджмент):");
+            if (!direction) direction = "-"; 
+
+    
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzivinqC-blkPLQNSNzpqHYzvAjC9csfCgNt6LPwBWyOJQ9ahx9XGIkWmB8t-D2GmvZSg/exec'; 
+
+            alert("Жіберілуде...");
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors', 
+                cache: 'no-cache',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    name: name, 
+                    status: status, 
+                    direction: direction 
+                })
+            }).then(() => {
+                alert("Рахмет, " + name + "! Деректеріңіз сақталды.");
+            }).catch(error => {
+                alert("Қате кетті. Қайта көріңіз.");
+            }); 
+        }
+
+        // Carousel
         const items = document.querySelectorAll('.carousel-item');
         let current = 0;
-
         function updateCarousel() {
             items.forEach((item, index) => {
                 item.className = 'carousel-item';
@@ -254,37 +266,19 @@
                 else item.classList.add('hidden');
             });
         }
-
-        items.forEach((item, index) => {
-            item.addEventListener('click', () => {
-                current = index;
-                updateCarousel();
-            });
-        });
-
-        setInterval(() => {
-            current = (current + 1) % items.length;
-            updateCarousel();
-        }, 4000);
-
+        items.forEach((item, index) => item.addEventListener('click', () => { current = index; updateCarousel(); }));
+        setInterval(() => { current = (current + 1) % items.length; updateCarousel(); }, 4000);
         updateCarousel();
-
-        function handleRSVP(status) {
-            let name = prompt("Атыңыз:");
-            if (name) alert("Рахмет, " + name + "!");
-        }
 
         // Timer
         const eventDate = new Date("April 7, 2026 13:00:00").getTime();
         setInterval(() => {
             const now = new Date().getTime();
             const d = eventDate - now;
-            if (document.getElementById("days")) {
-                document.getElementById("days").innerHTML = Math.max(0, Math.floor(d / (1000 * 60 * 60 * 24)));
-                document.getElementById("hours").innerHTML = Math.max(0, Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-                document.getElementById("minutes").innerHTML = Math.max(0, Math.floor((d % (1000 * 60 * 60)) / (1000 * 60)));
-                document.getElementById("seconds").innerHTML = Math.max(0, Math.floor((d % (1000 * 60)) / 1000));
-            }
+            document.getElementById("days").innerHTML = Math.max(0, Math.floor(d / (1000 * 60 * 60 * 24)));
+            document.getElementById("hours").innerHTML = Math.max(0, Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+            document.getElementById("minutes").innerHTML = Math.max(0, Math.floor((d % (1000 * 60 * 60)) / (1000 * 60)));
+            document.getElementById("seconds").innerHTML = Math.max(0, Math.floor((d % (1000 * 60)) / 1000));
         }, 1000);
     </script>
 </body>
